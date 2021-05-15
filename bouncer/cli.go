@@ -60,7 +60,7 @@ func Run() (*Context, error) {
 
 	app := &cli.App{
 		Name:      "chia-bouncer",
-		Usage:     "remove nodes by given location from your connections",
+		Usage:     "remove nodes by given geo ip location from your connections",
 		UsageText: "chia-bouncer -ce /home/steffen/chia-blockchain/venv/bin/chia mars",
 		ArgsUsage: "LOCATION",
 		Description: "Tool will lookup connections via 'chia show -c', get ip locations via geoiplookup and " +
