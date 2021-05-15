@@ -95,12 +95,6 @@ func Run() (*Context, error) {
 			location = strings.Join(c.Args().Slice(), " ")
 			return nil
 		},
-		Authors: []*cli.Author{
-			{
-				Name:  "st3ffn",
-				Email: "funk.up.up@gmail.com",
-			},
-		},
 		Copyright: "GNU GPLv3",
 		Version:   version,
 	}
