@@ -79,8 +79,8 @@ func Test_run(t *testing.T) {
 			homeDir: homeDir,
 			exists:  exists,
 			want: &Context{
-				chiaExecutable: steffenHome + "/" + DefaultChiaExecutableSuffix,
-				location:       "mars",
+				ChiaExecutable: steffenHome + "/" + DefaultChiaExecutableSuffix,
+				Location:       "mars",
 			}},
 		{
 			name:    "ok with custom chia",
@@ -88,8 +88,8 @@ func Test_run(t *testing.T) {
 			homeDir: homeDir,
 			exists:  exists,
 			want: &Context{
-				chiaExecutable: "/home/something/else/chia",
-				location:       "elon on mars",
+				ChiaExecutable: "/home/something/else/chia",
+				Location:       "elon on mars",
 			}},
 		{
 			name:    "nok with no location",
@@ -115,7 +115,7 @@ func Test_run(t *testing.T) {
 		getUserHomeDir = tt.homeDir
 		enforceChiaExecutable = tt.exists
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Run()
+			got, err := RunCli()
 			if err != nil {
 				if !strings.Contains(err.Error(), tt.wantErr) {
 					t.Errorf("Run() error = %v, wantErr %v", err, tt.wantErr)

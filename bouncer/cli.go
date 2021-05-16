@@ -8,22 +8,24 @@ import (
 )
 
 var (
-	// the version of this tool
-	version = "unknown"
 	// the arguments handed over to the cli
-	args    = os.Args
+	args = os.Args
 	// function the get the users home directory
-	getUserHomeDir        = os.UserHomeDir
+	getUserHomeDir = os.UserHomeDir
 	// function to enforce the chia executable
 	enforceChiaExecutable = enforceExists
 	// function to provide file info
-	getFileInfo           = os.Stat
+	getFileInfo = os.Stat
 )
 
 // Context describes the environment of the tool execution
 type Context struct {
-	chiaExecutable string
-	location       string
+	// ChiaExecutable the chia executable e.g. /home/steffen/chia-blockchain/venv/bin/chia
+	ChiaExecutable string
+	// Location is the location to filter for
+	Location string
+	// Done indicates that we are done (--help, --version...)
+	Done bool
 }
 
 const DefaultChiaExecutableSuffix = "chia-blockchain/venv/bin/chia"
@@ -52,30 +54,38 @@ func enforceExists(chiaExecutable string) error {
 	return nil
 }
 
-// Run starts the cli which includes validation of parameters.
-// the returned context consists of chia executable and location to filter for
-func Run() (*Context, error) {
+// RunCli starts the cli which includes validation of parameters.
+// The returned context consists of a chia executable and location to filter for
+func RunCli() (*Context, error) {
 	var chiaExecutable string
 	var location string
+	var done bool
+
+	cli.HelpFlag = &cli.BoolFlag{
+		Name:        "help",
+		Aliases:     []string{"h"},
+		Usage:       "show help",
+		Destination: &done,
+	}
 
 	app := &cli.App{
 		Name:      "chia-bouncer",
-		Usage:     "remove nodes by given geo ip location from your connections",
-		UsageText: "chia-bouncer -ce /home/steffen/chia-blockchain/venv/bin/chia mars",
+		Usage:     "remove unwanted connections from your Chia Node based on Geo IP Location.",
+		UsageText: "chia-bouncer [-e CHIA-EXECUTABLE] LOCATION\n\t chia-bouncer -e /chia-blockchain/venv/bin/chia mars",
 		ArgsUsage: "LOCATION",
 		Description: "Tool will lookup connections via 'chia show -c', get ip locations via geoiplookup and " +
-			"remove nodes from specified location via 'chia show -r' ",
+			"remove nodes from specified LOCATION via 'chia show -r' ",
 		EnableBashCompletion: true,
+		HideHelpCommand:      true,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:        "chiaexec",
+				Name:        "chia-exec",
 				Aliases:     []string{"e"},
 				Required:    false,
 				DefaultText: "$HOME/chia-blockchain/venv/bin/chia",
 				Usage:       "`CHIA-EXECUTABLE`. normally located inside the bin folder of your venv directory",
 				Destination: &chiaExecutable,
 			},
-			cli.VersionFlag,
 		},
 		Action: func(c *cli.Context) error {
 			if c.NArg() < 1 {
@@ -92,11 +102,10 @@ func Run() (*Context, error) {
 				return err
 			}
 
-			location = strings.Join(c.Args().Slice(), " ")
+			location = strings.TrimSpace(strings.Join(c.Args().Slice(), " "))
 			return nil
 		},
 		Copyright: "GNU GPLv3",
-		Version:   version,
 	}
 
 	err := app.Run(args)
@@ -105,7 +114,8 @@ func Run() (*Context, error) {
 	}
 
 	return &Context{
-		chiaExecutable: chiaExecutable,
-		location:       location,
+		ChiaExecutable: chiaExecutable,
+		Location:       location,
+		Done:           done,
 	}, nil
 }
