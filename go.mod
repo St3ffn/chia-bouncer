@@ -1,4 +1,4 @@
-module chia-bouncer
+module github.com/St3ffn/chia-bouncer
 
 go 1.16
 
