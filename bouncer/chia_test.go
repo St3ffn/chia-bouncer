@@ -13,7 +13,7 @@ func Test_convertToNode(t *testing.T) {
 	}{
 		{
 			name: "line is ok",
-			line: "FULL_NODE 12.13.14.15                          12550/8444  e49d1edd... May 14 18:34:56    199.9|0.0",
+			line: "FULL_NODE 12.13.14.15                          12550/8444  eeee1edd... May 14 18:34:56    199.9|0.0",
 			wantNode: FullNode{
 				Ip:          "12.13.14.15",
 				Ports:       "12550/8444",
