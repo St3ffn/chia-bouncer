@@ -3,7 +3,9 @@ package bouncer
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -20,8 +22,10 @@ type FullNode struct {
 	NodeId string
 	// LastConnect in format May 14 11:15:20
 	LastConnect string
-	// UpDown represents the down- and uplink in MiB (e.g. 0.2|0.0)
-	UpDown string
+	// Up represents the uplink in MiB
+	Up float64
+	// Down represents the downlink in MiB
+	Down float64
 }
 
 // IpLocation to get the corresponding location of the ipV4 of the FullNode
@@ -83,13 +87,39 @@ func convertToNode(line string) (node *FullNode, err error) {
 		return nil, fmt.Errorf("line can not be converted: %s", line)
 	}
 
+	up, down, err := convertUpDown(fields[7])
+
+	if err != nil {
+		return nil, fmt.Errorf("invalid Up|Dwn in line %s", line)
+	}
+
 	return &FullNode{
 		Ip:          fields[1],
 		Ports:       fields[2],
 		NodeId:      strings.TrimSuffix(fields[3], "..."),                     // remove ... of string "62b29c64..."
 		LastConnect: fmt.Sprintf("%s %s %s", fields[4], fields[5], fields[6]), // like "May 14 17:03:40"
-		UpDown:      fields[7],
+		Up:          up,
+		Down:        down,
 	}, nil
+}
+
+// convertUpDown converts a string in format "128.5|17.7" to it's uplink and downlink parts
+func convertUpDown(upDown string) (up, down float64, err error) {
+	parts := strings.Split(upDown, "|")
+	if len(parts) != 2 {
+		return 0, 0, errors.New("invalid upDown")
+	}
+
+	up, err = strconv.ParseFloat(parts[0], 64)
+	if err != nil {
+		return 0, 0, errors.New("can't convert up to float")
+	}
+	// 32 bit precision
+	down, err = strconv.ParseFloat(parts[1], 64)
+	if err != nil {
+		return 0, 0, errors.New("can't convert down to float")
+	}
+	return up, down, nil
 }
 
 // RemoveNode will remove the connected full node via "chia show -r nodeId"

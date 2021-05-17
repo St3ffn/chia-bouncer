@@ -34,3 +34,23 @@ func (f FilterByLocation) Filter() ([]FullNode, error) {
 	}
 	return filtered, nil
 }
+
+// FilterByDown can filter FullNodes by it's down speed.
+// All Nodes which have a lower or equal down speed than specified by threshold will be present
+type FilterByDown struct {
+	Nodes []FullNode
+	// threshold the minimum (inclusive down speed)
+	Threshold float64
+}
+
+// Filter performs filtering of FullNodes by down threshold.
+// All Nodes which have a lower or equal down speed than specified by threshold will be present
+func (f FilterByDown) Filter() ([]FullNode, error) {
+	var filtered []FullNode
+	for _, node := range f.Nodes {
+		if node.Down <= f.Threshold {
+			filtered = append(filtered, node)
+		}
+	}
+	return filtered, nil
+}

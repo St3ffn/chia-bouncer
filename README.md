@@ -72,6 +72,14 @@ To specify a custom path to your chia executable use `--chiaexec` or `-e`
 # removes all connections from "elon on mars"
 > chia-bouncer -e /home/steffen/chia-blockchain/venv/bin/chia elon on mars
 ```
+You can also add another filter to remove all nodes which have a lower or equal down speed (in MiB) than specified. 
+This will be independent of the location. It can be done via `--down-threshold` or `-d`.
+```bash
+# custom defined chia executable
+# remove all connections with down speed lower or equal than 1.52 MiB
+# removes all connections from "elon on mars"
+> chia-bouncer -e /home/steffen/chia-blockchain/venv/bin/chia -d 1.52 elon on mars
+```
 Call with `--help` or `-h` to see the help page 
 ```bash
 > chia-bouncer -h
@@ -80,18 +88,20 @@ NAME:
    chia-bouncer - remove unwanted connections from your Chia Node based on Geo IP Location.
 
 USAGE:
-   chia-bouncer [-e CHIA-EXECUTABLE] LOCATION
-   chia-bouncer -e /chia-blockchain/venv/bin/chia mars
+   chia-bouncer [-e CHIA-EXECUTABLE] [-d DOWN-THRESHOLD] LOCATION
+   chia-bouncer -e /chia-blockchain/venv/bin/chia -d 0.2 mars
 
 DESCRIPTION:
    Tool will lookup connections via 'chia show -c', get ip locations via geoiplookup and remove nodes from specified LOCATION via 'chia show -r'
 
 GLOBAL OPTIONS:
-   --chia-exec CHIA-EXECUTABLE, -e CHIA-EXECUTABLE  CHIA-EXECUTABLE. normally located inside the bin folder of your venv directory (default: $HOME/chia-blockchain/venv/bin/chia)
-   --help, -h                                       show help (default: false)
+   --chia-exec CHIA-EXECUTABLE, -e CHIA-EXECUTABLE     CHIA-EXECUTABLE. normally located inside the bin folder of your venv directory (default: $HOME/chia-blockchain/venv/bin/chia)
+   --down-threshold DOWN-THRESHOLD, -d DOWN-THRESHOLD  DOWN-THRESHOLD defines the additional filter for minimal down speed in MiB for filtering. (default: not active)
+   --help, -h                                          show help (default: false)
 
 COPYRIGHT:
    GNU GPLv3
+
 ```
 
 ### Verification

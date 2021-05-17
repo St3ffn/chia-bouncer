@@ -24,6 +24,10 @@ type Context struct {
 	ChiaExecutable string
 	// Location is the location to filter for
 	Location string
+	// IsDownThreshold is true in case it was set by the user
+	IsDownThreshold bool
+	// DownThreshold is the down speed threshold to filter for
+	DownThreshold float64
 	// Done indicates that we are done (--help, --version...)
 	Done bool
 }
@@ -60,6 +64,8 @@ func RunCli() (*Context, error) {
 	var chiaExecutable string
 	var location string
 	var done bool
+	var isDownThreshold bool
+	var downThreshold float64
 
 	cli.HelpFlag = &cli.BoolFlag{
 		Name:        "help",
@@ -71,7 +77,7 @@ func RunCli() (*Context, error) {
 	app := &cli.App{
 		Name:      "chia-bouncer",
 		Usage:     "remove unwanted connections from your Chia Node based on Geo IP Location.",
-		UsageText: "chia-bouncer [-e CHIA-EXECUTABLE] LOCATION\n\t chia-bouncer -e /chia-blockchain/venv/bin/chia mars",
+		UsageText: "chia-bouncer [-e CHIA-EXECUTABLE] [-d DOWN-THRESHOLD] LOCATION\n\t chia-bouncer -e /chia-blockchain/venv/bin/chia -d 0.2 mars",
 		ArgsUsage: "LOCATION",
 		Description: "Tool will lookup connections via 'chia show -c', get ip locations via geoiplookup and " +
 			"remove nodes from specified LOCATION via 'chia show -r' ",
@@ -86,10 +92,21 @@ func RunCli() (*Context, error) {
 				Usage:       "`CHIA-EXECUTABLE`. normally located inside the bin folder of your venv directory",
 				Destination: &chiaExecutable,
 			},
+			&cli.Float64Flag{
+				Name:        "down-threshold",
+				Aliases:     []string{"d"},
+				Required:    false,
+				DefaultText: "not active",
+				Usage:       "`DOWN-THRESHOLD` defines the additional filter for minimal down speed in MiB for filtering.",
+				Destination: &downThreshold,
+			},
 		},
 		Action: func(c *cli.Context) error {
 			if c.NArg() < 1 {
 				return errors.New("LOCATION is missing")
+			}
+			if c.IsSet("down-threshold") {
+				isDownThreshold = true
 			}
 			if chiaExecutable == "" {
 				defaultExecutable, err := defaultChiaExecutable()
@@ -114,8 +131,10 @@ func RunCli() (*Context, error) {
 	}
 
 	return &Context{
-		ChiaExecutable: chiaExecutable,
-		Location:       location,
-		Done:           done,
+		ChiaExecutable:  chiaExecutable,
+		Location:        location,
+		IsDownThreshold: isDownThreshold,
+		DownThreshold:   downThreshold,
+		Done:            done,
 	}, nil
 }

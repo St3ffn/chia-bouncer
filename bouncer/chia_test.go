@@ -19,7 +19,8 @@ func Test_convertToNode(t *testing.T) {
 				Ports:       "12550/8444",
 				NodeId:      "eeee1edd",
 				LastConnect: "May 14 18:34:56",
-				UpDown:      "199.9|0.0",
+				Up:          199.9,
+				Down:        0.0,
 			},
 		},
 		{
@@ -55,8 +56,11 @@ func testNode(got, want FullNode, t *testing.T) {
 	if got.LastConnect != want.LastConnect {
 		t.Errorf("convertToNode() differ in LastConnect gotNode = %v, want %v", got, want)
 	}
-	if got.UpDown != want.UpDown {
-		t.Errorf("convertToNode() differ in UpDown gotNode = %v, want %v", got, want)
+	if got.Up != want.Up {
+		t.Errorf("convertToNode() differ in Up gotNode = %v, want %v", got, want)
+	}
+	if got.Down != want.Down {
+		t.Errorf("convertToNode() differ in Down gotNode = %v, want %v", got, want)
 	}
 }
 
@@ -91,10 +95,10 @@ func Test_convertToNodes(t *testing.T) {
 	}{
 		{name: "no full nodes", input: connectionsNoFullNode, wantNodes: nil},
 		{name: "several full nodes", input: conncetions, wantNodes: []FullNode{
-			{Ip: "1.1.1.1", Ports: "61075/8444", NodeId: "bbbbbbbb", LastConnect: "May 14 18:35:01", UpDown: "12.8|5.8"},
-			{Ip: "2.2.2.2", Ports: "8444/8444", NodeId: "cccccccc", LastConnect: "May 14 18:35:01", UpDown: "3.2|12.1"},
-			{Ip: "3.3.3.3", Ports: "8444/8444", NodeId: "dddddddd", LastConnect: "May 14 11:55:26", UpDown: "0.0|0.0"},
-			{Ip: "4.4.4.4", Ports: "8444/8444", NodeId: "wewewewe", LastConnect: "May 14 18:35:01", UpDown: "25.8|2.9"},
+			{Ip: "1.1.1.1", Ports: "61075/8444", NodeId: "bbbbbbbb", LastConnect: "May 14 18:35:01", Up: 12.8, Down: 5.8},
+			{Ip: "2.2.2.2", Ports: "8444/8444", NodeId: "cccccccc", LastConnect: "May 14 18:35:01", Up: 3.2, Down: 12.1},
+			{Ip: "3.3.3.3", Ports: "8444/8444", NodeId: "dddddddd", LastConnect: "May 14 11:55:26", Up: 0.0, Down: 0.0},
+			{Ip: "4.4.4.4", Ports: "8444/8444", NodeId: "wewewewe", LastConnect: "May 14 18:35:01", Up: 25.8, Down: 2.9},
 		}},
 	}
 	for _, tt := range tests {

@@ -28,26 +28,46 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	filter := bouncer.FilterByLocation{
+	var filter bouncer.Filter
+	var filteredDownThreshold []bouncer.FullNode
+
+	if ctx.IsDownThreshold {
+		filter = bouncer.FilterByDown{
+			Nodes:     nodes,
+			Threshold: ctx.DownThreshold,
+		}
+		filteredDownThreshold, err = filter.Filter()
+		if err != nil {
+			return err
+		}
+	}
+
+	filter = bouncer.FilterByLocation{
 		Nodes:            nodes,
 		LocationToFilter: ctx.Location,
 	}
-	filtered, err := filter.Filter()
+	filteredByLocation, err := filter.Filter()
 	if err != nil {
 		return err
+	}
+	filtered := append(filteredDownThreshold, filteredByLocation...)
+
+	filterSet := make(map[string]bouncer.FullNode)
+	for _, node := range filtered {
+		filterSet[node.NodeId] = node
 	}
 
 	if len(filtered) == 0 {
 		_, _ = fmt.Fprintf(os.Stdout, "nothing from %s\n", ctx.Location)
 	}
 
-	for _, node := range filtered {
+	for _, node := range filterSet {
 		if err := chiaCli.RemoveNode(node.NodeId); err != nil {
 			_, _ = fmt.Fprintf(os.Stderr, "Can not filter %s:%s from %s...stopping\n",
 				node.Ip, node.NodeId, ctx.Location)
 			return err
 		}
 	}
-	_, _ = fmt.Fprintf(os.Stdout, "found %d - filtered %d from %s\n", len(nodes), len(filtered), ctx.Location)
+	_, _ = fmt.Fprintf(os.Stdout, "found %d - filtered %d from %s\n", len(nodes), len(filterSet), ctx.Location)
 	return nil
 }
