@@ -1,7 +1,9 @@
 # chia-bouncer
 
+[![Release](https://img.shields.io/github/v/release/St3ffn/chia-bouncer)](https://github.com/St3ffn/chia-bouncer/releases)
 [![CI](https://github.com/St3ffn/chia-bouncer/actions/workflows/ci.yml/badge.svg)](https://github.com/St3ffn/chia-bouncer/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/st3ffn/chia-bouncer)](/LICENSE)
+[![GO](https://img.shields.io/github/go-mod/go-version/St3ffn/chia-bouncer)](https://golang.org/)
 
 ![really](https://media.giphy.com/media/5fBH6zf7l8bxukYh74Q/giphy.gif)
 
