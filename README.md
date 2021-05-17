@@ -1,5 +1,6 @@
 # chia-bouncer
 
+[![CI](https://github.com/St3ffn/chia-bouncer/actions/workflows/ci.yml/badge.svg)](https://github.com/St3ffn/chia-bouncer/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/st3ffn/chia-bouncer)](/LICENSE)
 
 ![really](https://media.giphy.com/media/5fBH6zf7l8bxukYh74Q/giphy.gif)
