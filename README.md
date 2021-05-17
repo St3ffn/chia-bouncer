@@ -74,7 +74,7 @@ To specify a custom path to your chia executable use `--chiaexec` or `-e`
 > chia-bouncer -e /home/steffen/chia-blockchain/venv/bin/chia elon on mars
 ```
 You can also add another filter to remove all nodes which have a lower or equal down speed (in MiB) than specified. 
-This will be independent of the location. It can be done via `--down-threshold` or `-d`.
+This will be independent of the location filter. It can be done via `--down-threshold` or `-d`.
 ```bash
 # custom defined chia executable
 # remove all connections with down speed lower or equal than 1.52 MiB
