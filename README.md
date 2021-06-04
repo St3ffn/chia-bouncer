@@ -23,6 +23,21 @@ and the cli tool `geoiplookup`
 
 ### Installation 
 
+You can either install a pre-built binary or build the cli tool from source. 
+If you go with the pre-built binary don't forget that you still need to install `geoiplookup`.
+
+### Pre-Built Binaries
+
+Pre-built binaries can be found on the [release page](https://github.com/St3ffn/chia-bouncer/releases).
+Keep in mind you will still need the `geoiplookup` tool installed.
+They are available for the following platforms:
+
+- darwin-amd64 (64 Bit MacOS)
+- linux-amd64 (64 Bit Linux)
+- linux-arm64 (64Bit Linux for ARM)
+
+### Build from Source
+
 Clone the repository
 
 ```shell
@@ -35,6 +50,8 @@ Build the binary
 ```shell
 go build
 ```
+
+### Install geoiplookup and update database
 
 The tool `geoiplookup` is required to perform the Geo IP Location lookup.
 Ubuntu 18 and Ubuntu 20 users can simply install it via:
